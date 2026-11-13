@@ -1,3 +1,4 @@
+import shutil
 import streamlit as st
 import os
 from dotenv import load_dotenv
@@ -20,6 +21,10 @@ with st.sidebar:
     uploaded_file = st.file_uploader("Unggah file PDF di sini", type="pdf")
     if uploaded_file is not None:
         with st.spinner("Memproses..."):
+            
+            if os.path.exists("document_store"):
+                shutil.rmtree("document_store")
+                
             pdf_reader = PdfReader(uploaded_file)
             raw_text = "".join(page.extract_text() for page in pdf_reader.pages if page.extract_text())
             text_chunks = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100).split_text(raw_text)
